@@ -41,8 +41,10 @@ SCRIPT_NAME="Nextcloud Install Script"
 SCRIPT_EXPLAINER="This script is installing all requirements that are needed for Nextcloud to run.
 It's the first of two parts that are necessary to finish your customized Nextcloud installation."
 # shellcheck source=lib.sh
-#source <(curl -sL https://github.com/klausagnoletti/vm/raw/master/lib.sh)
-source ./lib.sh #We want to source the local version of lib.sh instead
+source <(curl -sL https://github.com/klausagnoletti/vm/raw/master/lib.sh)
+
+NCVERSION="25.0.13" #We want $NCVERSION sourced from lib.sh to be overwritten by this
+export NCVERSION
 
 # Check for errors + debug code and abort if something isn't right
 # 1 = ON
