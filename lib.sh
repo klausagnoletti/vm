@@ -87,7 +87,7 @@ Confirm by pressing [ENTER]. Cancel by pressing [ESC]."
 MENU_GUIDE="Navigate with the [ARROW] keys and confirm by pressing [ENTER]. Cancel by pressing [ESC]."
 RUN_LATER_GUIDE="You can view this script later by running 'sudo bash $SCRIPTS/menu.sh'."
 # Repo
-GITHUB_REPO="https://raw.githubusercontent.com/nextcloud/vm/master"
+GITHUB_REPO="https://raw.githubusercontent.com/klausagnoletti/vm/master/" #Changing this is enough for our fork of nextcloud-startup.sh to be downloaded later on
 STATIC="$GITHUB_REPO/static"
 LETS_ENC="$GITHUB_REPO/lets-encrypt"
 APP="$GITHUB_REPO/apps"
@@ -101,7 +101,7 @@ VAGRANT_DIR="$GITHUB_REPO/vagrant"
 NOT_SUPPORTED_FOLDER="$GITHUB_REPO/not-supported"
 GEOBLOCKDAT="$GITHUB_REPO/geoblockdat"
 NCREPO="https://download.nextcloud.com/server/releases"
-ISSUES="https://github.com/nextcloud/vm/issues"
+ISSUES="https://github.com/klausagnoletti/vm/issues"
 # User information
 GUIUSER=ncadmin
 GUIPASS=nextcloud
@@ -128,7 +128,8 @@ SECURE="$SCRIPTS/setup_secure_permissions_nextcloud.sh"
 # Nextcloud version
 nc_update() {
     CURRENTVERSION=$(sudo -u www-data php $NCPATH/occ status | grep "versionstring" | awk '{print $3}')
-    NCVERSION=$(curl -s -m 900 $NCREPO/ | sed --silent 's/.*href="nextcloud-\([^"]\+\).zip.asc".*/\1/p' | sort --version-sort | tail -1)
+    #NCVERSION=$(curl -s -m 900 $NCREPO/ | sed --silent 's/.*href="nextcloud-\([^"]\+\).zip.asc".*/\1/p' | sort --version-sort | tail -1)
+    NCVERSION=25.0.13 #We want to Nextcloud 25
     STABLEVERSION="nextcloud-$NCVERSION"
     NCMAJOR="${NCVERSION%%.*}"
     CURRENTMAJOR="${CURRENTVERSION%%.*}"
@@ -387,8 +388,8 @@ something is wrong here. Please report this to $ISSUES"
 # Used in geoblock.sh
 get_newest_dat_files() {
     # IPv4
-    IPV4_NAME=$(curl -s https://github.com/nextcloud/vm/tree/master/geoblockdat \
-    | grep -oP '202[0-9]-[01][0-9]-Maxmind-Country-IPv4\.dat' | sort -r | head -1)
+    IPV4_NAME=$(curl -s https://github.com/nextcloud/vm/tree/master/geoblockdat \ 
+    | grep -oP '202[0-9]-[01][0-9]-Maxmind-Country-IPv4\.dat' | sort -r | head -1) #deliberately not pointing to fork on github.com
     if [ -z "$IPV4_NAME" ]
     then
         print_text_in_color "$IRed" "Could not get the latest IPv4 name. Not updating the .dat file"
@@ -414,7 +415,7 @@ get_newest_dat_files() {
     fi
     # IPv6
     IPV6_NAME=$(curl -s https://github.com/nextcloud/vm/tree/master/geoblockdat \
-    | grep -oP '202[0-9]-[01][0-9]-Maxmind-Country-IPv6\.dat' | sort -r | head -1)
+    | grep -oP '202[0-9]-[01][0-9]-Maxmind-Country-IPv6\.dat' | sort -r | head -1) #deliberately not pointing to fork on github.com
     if [ -z "$IPV6_NAME" ]
     then
         print_text_in_color "$IRed" "Could not get the latest IPv6 name. Not updating the .dat file"
@@ -741,7 +742,7 @@ then
     if ! nslookup github.com
     then
         msg_box "Network is NOT OK. You must have a working network connection to run this script.
-If you think that this is a bug, please report it to https://github.com/nextcloud/vm/issues."
+If you think that this is a bug, please report it to https://github.com/nextcloud/vm/issues." #deliberately not pointing to fork on github.com
         return 1
     fi
 fi
@@ -1871,12 +1872,12 @@ then
 fi
 if [[ "$CURRENTVERSION" = "$3" ]]
 then
-    curl_to_dir "https://patch-diff.githubusercontent.com/raw/nextcloud/${2}/pull" "${1}.patch" "/tmp"
+    curl_to_dir "https://patch-diff.githubusercontent.com/raw/klausagnoletti/${2}/pull" "${1}.patch" "/tmp"
     install_if_not git
     cd "${4}"
     if git apply --check /tmp/"${1}".patch >/dev/null 2>&1
     then
-        print_text_in_color "$IGreen" "Applying patch https://github.com/nextcloud/${2}/pull/${1} ..."
+        print_text_in_color "$IGreen" "Applying patch https://github.com/klausagnoletti/${2}/pull/${1} ..."
         git apply /tmp/"${1}".patch
     fi
 fi
